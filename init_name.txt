@@ -1,0 +1,6 @@
+NJ_Fire Fire_Engine_1
+NJ_Fire Fire_Engine_2
+Fire_Engine_1 Firefighter_1
+Fire_Engine_1 Firefighter_2
+Fire_Engine_2 Firefighter_3
+Fire_Engine_2 Firefighter_4

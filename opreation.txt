@@ -1,0 +1,4 @@
+del Fire_Engine_1 Firefighter_1
+add Incident_X Search_Team
+add Incident_X Rescue_Team
+add Search_Team Fire_Engine_1
