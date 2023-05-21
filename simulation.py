@@ -1,34 +1,41 @@
 import argparse
+# import pdb; pdb.set_trace()
 
 class Name:
 
     def __init__(self, name):
         self.name = name
-        self.ancestor = set()
-        self.successor = set()
+        self.parent = set()
+        self.child = set()
     
-    # def __repr__(self):
-    #     return self.name
+    def __repr__(self):
+        return self.name
     
-    def add_ancestor(self, ancestor):
-        self.ancestor.add(ancestor)
+    def add_parent(self, parent):
+        self.parent.add(parent)
 
-    def add_successor(self, successor):
-        self.successor.add(successor)
+    def add_child(self, child):
+        self.child.add(child)
     
-    def del_ancestor(self, ancestor):
-        if ancestor in self.ancestor:
-            self.ancestor.remove(ancestor)
+    def del_parent(self, parent):
+        if parent in self.parent:
+            self.parent.remove(parent)
 
-    def del_successor(self, successor):
-        if successor in self.successor:
-            self.successor.remove(successor)
+    def del_child(self, child):
+        if child in self.child:
+            self.child.remove(child)
+
+    def get_parent(self):
+        return self.parent
+
+    def get_child(self):
+        return self.child
     
-    def print_ancestor(self):
-        print(self.ancestor)
+    def print_parent(self):
+        print(self.parent)
 
-    def print_successor(self):
-        print(self.successor)
+    def print_child(self):
+        print(self.child)
 
 
 POISE = dict()
@@ -38,24 +45,47 @@ def add(node1, node2):
         POISE[node1] = Name(node1)
     if node2 not in POISE:
         POISE[node2] = Name(node2)
-    POISE[node1].add_successor(node2)
-    POISE[node2].add_ancestor(node1)
+    POISE[node1].add_child(node2)
+    POISE[node2].add_parent(node1)
 
 def delete(node1, node2):
-    POISE[node1].del_successor(node2)
-    POISE[node2].del_ancestor(node1)
-    # for ancesstor in POISE[node1].ancestor:
-    #     POISE[ancesstor].del_successor(node1)
-    # for successor in POISE[node1].successor:
-    #     POISE[successor].del_ancestor(node1)
-    # del POISE[node1]
+    POISE[node1].del_child(node2)
+    POISE[node2].del_parent(node1)
 
+def calculate_ancestor():
+    ancestor_init = {}
+    for key in POISE:
+        ancestor_init[key] = set()
+
+    visited = set()
+    def cal_ance(key):
+        if key in visited:
+            return ancestor_init[key]
+        else:
+            visited.add(key)
+        if len(POISE[key].get_parent()) == 0:
+            return {key}
+        else:
+            parents = list(POISE[key].get_parent())
+            ancestor_init[key] = ancestor_init[key].union(POISE[key].get_parent())
+            for parent in parents:
+                ancestor = cal_ance(parent)
+                ancestor_init[key] = ancestor_init[key].union(ancestor)
+            return ancestor_init[key]
+
+
+    for key in POISE:
+        if len(POISE[key].get_child()) == 0:
+            cal_ance(key)
+        else:
+            continue
+
+    return ancestor_init
     
 
 parser = argparse.ArgumentParser()
 parser.add_argument("init", type=str)
 parser.add_argument("-op", dest="opreation", type=str)
-# parser.add_argument("-r", dest="removeFile", type=argparse.FileType('r'))
 args = parser.parse_args()
 
 init_file = args.init
@@ -68,8 +98,12 @@ for line in lines:
     if names[1] not in POISE:
         POISE[names[1]] = Name(names[1])
     
-    POISE[names[0]].add_successor(names[1])
-    POISE[names[1]].add_ancestor(names[0])
+    POISE[names[0]].add_child(names[1])
+    POISE[names[1]].add_parent(names[0])
+
+
+# calculate ancestor
+ances_init = calculate_ancestor()
 
 
 op_file = args.opreation
@@ -84,12 +118,22 @@ for line in lines:
     elif op == "del":
         delete(word[1], word[2])
 
+
+# for key in POISE:
+#     print(POISE[key])
+
+# calculate ancestor
+ances_change = calculate_ancestor()
+for key in ances_init:
+    if (ances_init[key] != ances_change[key]):
+        print(key, ances_init[key], ances_change[key])
+
 # output result
-for key in POISE:
-    print(key)
-    print("ancestor")
-    POISE[key].print_ancestor()
-    print("successor")
-    POISE[key].print_successor()
-    print("\n")
+# for key in POISE:
+#     print(key)
+#     print("parent")
+#     POISE[key].print_parent()
+#     print("child")
+#     POISE[key].print_child()
+#     print("\n")
 
