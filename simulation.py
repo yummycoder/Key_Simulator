@@ -126,7 +126,13 @@ for line in lines:
 ances_change = calculate_ancestor()
 for key in ances_init:
     if (ances_init[key] != ances_change[key]):
-        print(key, ances_init[key], ances_change[key])
+        print(key,": ")
+        print("Key-Oriented: ")
+        print("KP-ABE attributes in new key: ", len(ances_change[key]))
+        print("CP-ABE attributes in new key: ", len(ances_change[key]))
+        key_change = len((ances_init[key] - ances_change[key]).union(ances_change[key] - ances_init[key]))
+        print("ME-PKE key add/delete: ", key_change )
+        print("\n")
 
 # output result
 # for key in POISE:
