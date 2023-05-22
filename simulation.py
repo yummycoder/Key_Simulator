@@ -83,6 +83,31 @@ def calculate_ancestor():
     return ancestor_init
     
 
+def cal_size(ances_init, ances_change, kp_size, cp_size, pke_size, name_size):
+    for key in ances_init:
+        if (ances_init[key] != ances_change[key]):
+            print(key,": ")
+            print("Key-Oriented: ")
+            print("KP-ABE attributes in new key: ", len(ances_change[key]), " key size: ", kp_size[len(ances_change[key])], "KB")
+            print("CP-ABE attributes in new key: ", len(ances_change[key]), " key size: ", cp_size[len(ances_change[key])], "KB")
+            delete = len(ances_init[key] - ances_change[key])
+            add = len(ances_change[key] - ances_init[key])
+            print("ME-PKE key delete: ", delete, " key size: ", name_size*delete, "KB")
+            print("ME-PKE key add: ", add, " key size: ", pke_size[add], "KB")
+            print("\n")
+
+def load_data(path, result):
+    file = open(path, "r")
+    lines = file.read().splitlines()
+    for line in lines:
+        if line.startswith("#"):
+            continue
+        word = line.split('\t')
+        num = int(word[0])
+        value = float(word[1])
+        result.append(value)
+
+# main
 parser = argparse.ArgumentParser()
 parser.add_argument("init", type=str)
 parser.add_argument("-op", dest="opreation", type=str)
@@ -102,6 +127,7 @@ for line in lines:
     POISE[names[1]].add_parent(names[0])
 
 
+
 # calculate ancestor
 ances_init = calculate_ancestor()
 
@@ -119,20 +145,28 @@ for line in lines:
         delete(word[1], word[2])
 
 
+
+
+# load key size data
+kp_path = "./key_size_kp.txt"
+cp_path = "./key_size_cp.txt"
+pke_path = "./key_size_pke.txt"
+kp_size = [0]
+cp_size = [0]
+pke_size = [0]
+load_data(kp_path, kp_size)
+load_data(cp_path, cp_size)
+load_data(pke_path, pke_size)
+
+
 # for key in POISE:
 #     print(POISE[key])
 
 # calculate ancestor
 ances_change = calculate_ancestor()
-for key in ances_init:
-    if (ances_init[key] != ances_change[key]):
-        print(key,": ")
-        print("Key-Oriented: ")
-        print("KP-ABE attributes in new key: ", len(ances_change[key]))
-        print("CP-ABE attributes in new key: ", len(ances_change[key]))
-        key_change = len((ances_init[key] - ances_change[key]).union(ances_change[key] - ances_init[key]))
-        print("ME-PKE key add/delete: ", key_change )
-        print("\n")
+
+name_size = 0.016
+cal_size(ances_init, ances_change, kp_size, cp_size, pke_size, name_size)
 
 # output result
 # for key in POISE:
