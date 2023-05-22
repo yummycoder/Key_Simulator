@@ -88,8 +88,8 @@ def cal_size(ances_init, ances_change, kp_size, cp_size, pke_size, name_size):
         if (ances_init[key] != ances_change[key]):
             print(key,": ")
             print("Key-Oriented: ")
-            print("KP-ABE attributes in new key: ", len(ances_change[key]), " key size: ", kp_size[len(ances_change[key])], "KB")
-            print("CP-ABE attributes in new key: ", len(ances_change[key]), " key size: ", cp_size[len(ances_change[key])], "KB")
+            print("KP-ABE attributes in new key: ", len(ances_change[key])+1, " key size: ", kp_size[len(ances_change[key])+1], "KB")
+            print("CP-ABE attributes in new key: ", len(ances_change[key])+1, " key size: ", cp_size[len(ances_change[key])+1], "KB")
             delete = len(ances_init[key] - ances_change[key])
             add = len(ances_change[key] - ances_init[key])
             print("ME-PKE key delete: ", delete, " key size: ", name_size*delete, "KB")
