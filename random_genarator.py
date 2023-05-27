@@ -7,6 +7,7 @@ level_max = 6
 fanout_min = 4
 fanout_max = 6
 op_max = 10
+random.seed(datetime.now().timestamp())
 
 
 # generateTree(levelMin, levelMax, parent, fanoutMin, fanoutMax):
@@ -17,9 +18,8 @@ op_max = 10
 #     fanout = randrange(fanoutMin, fanoutMax)
 #     for i in range(0, fanout):
 #         generateTree(levelMin - 1, levelMax - 1, n, , fanoutMin, fanoutMax);
-
+    
 def generate_tree(levelMin, levelMax, parent, fanoutMin, fanoutMax, name_prefix, file, global_count):
-    random.seed(datetime.now().timestamp())
     n = name_prefix + str(global_count)
     if parent:
         file.write(f"{parent} {n}\n")
@@ -39,7 +39,6 @@ incident_count = generate_tree(level_min, level_max, "Incident_0", fanout_min, f
 
 file.close()
 
-random.seed(datetime.now().timestamp())
 op_count = random.randrange(1, op_max+1)
 
 file = open("random_update.txt", "w")
